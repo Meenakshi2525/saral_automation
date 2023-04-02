@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -34,7 +36,7 @@ import pages.KaryakartaDynamicForm;
 import resources.Base;
 import utils.KaryakaryaDataEntryFormControl;
 
-public class wardKaryakarta {
+public class WardKaryakarta {
 	// public WebDriver driver;
 	JavascriptExecutor js;
 	WebDriverWait wait, wait2;
@@ -179,9 +181,12 @@ public class wardKaryakarta {
 	public String copiedEmail;
 	public Base contextSteps;
 
+	public static Logger log = LogManager.getLogger(WardKaryakarta.class.getName());
+
 	@Given("^user logged in into the saral application$")
 	public void user_logged_in_into_the_saral_application(DataTable login_table_ward)
 			throws InterruptedException, IOException {
+
 		// get driver
 		driver = DriverFactory.getDriver();
 		// driver.get("https://zila-staging.ccdms.in/");
@@ -193,39 +198,9 @@ public class wardKaryakarta {
 		KaryakaryaDataEntryFormControl login_values = new KaryakaryaDataEntryFormControl(map.get("Email"),
 				map.get("Password"), map.get("Otp"));
 
-		DriverFactory.getDriver().get("https://zila-staging.ccdms.in/");
-
-//		Login.login_in_saral_application(login_values.getKaryakartaEmail(), login_values.getKaryakartaPassword(),
-//				login_values.getKaryakartaOtp());
-		System.out.println("User Logged in Successfully");
-		ngDriver = new NgWebDriver((JavascriptExecutor) driver);
-		wait = new WebDriverWait(driver, Duration.ofSeconds(110));
-		js = (JavascriptExecutor) driver;
-		WebElement loginEmail = driver.findElement(By.name("email"));
-		loginEmail.sendKeys(login_values.getKaryakartaEmail());
-		Thread.sleep(2000);
-		WebElement loginPassword = driver.findElement(By.name("password"));
-
-		wait.until(ExpectedConditions.visibilityOf(loginPassword));
-		loginPassword.sendKeys(login_values.getKaryakartaPassword());
-		ngDriver.withRootSelector("\"app-root\"").waitForAngularRequestsToFinish();
-		Thread.sleep(2000);
-		wait.until(ExpectedConditions
-				.elementToBeClickable(driver.findElement(By.xpath("//button/span[contains(.,'Send OTP')]")))).click();
-		Thread.sleep(2000);
-		ngDriver.withRootSelector("\"app-root\"").waitForAngularRequestsToFinish();
-		List<WebElement> optInputElement = driver.findElements(By.className("otp-input"));
-		String otp = login_values.getKaryakartaOtp();
-		wait.until(ExpectedConditions.visibilityOf(optInputElement.get(0))).sendKeys(String.valueOf(otp.charAt(0)));
-		wait.until(ExpectedConditions.visibilityOf(optInputElement.get(1))).sendKeys(String.valueOf(otp.charAt(1)));
-		wait.until(ExpectedConditions.visibilityOf(optInputElement.get(2))).sendKeys(String.valueOf(otp.charAt(2)));
-		wait.until(ExpectedConditions.visibilityOf(optInputElement.get(3))).sendKeys(String.valueOf(otp.charAt(3)));
-		wait.until(ExpectedConditions.visibilityOf(optInputElement.get(4))).sendKeys(String.valueOf(otp.charAt(4)));
-		wait.until(ExpectedConditions.visibilityOf(optInputElement.get(5))).sendKeys(String.valueOf(otp.charAt(5)));
-
-		WebElement submitButtom = driver.findElement(By.tagName("button"));
-		wait.until(ExpectedConditions.elementToBeClickable(submitButtom)).click();
-
+		Login.login_in_saral_application(login_values.getKaryakartaEmail(), login_values.getKaryakartaPassword(),
+				login_values.getKaryakartaOtp());
+		log.debug("user successfully came on the dashboard page");
 	}
 
 	@Then("^user click on sangathan data management card on dashboard$")
@@ -237,6 +212,7 @@ public class wardKaryakarta {
 		ngDriver = new NgWebDriver((JavascriptExecutor) driver);
 		WebElement SangathanDataEntryEle = driver.findElements(By.className("data-entry-card-titles")).get(0);
 		wait.until(ExpectedConditions.elementToBeClickable(SangathanDataEntryEle)).click();
+		log.debug("user click on sangathan data management card");
 		ngDriver.withRootSelector("\"app-root\"").waitForAngularRequestsToFinish();
 		Thread.sleep(2000);
 
@@ -250,6 +226,7 @@ public class wardKaryakarta {
 		List<WebElement> addEntryElement = driver.findElements(By.xpath("//button/span[contains(text(),'Add Entry')]"));
 		wait.until(ExpectedConditions.visibilityOf(addEntryElement.get(10)));
 		js.executeScript("arguments[0].click();", addEntryElement.get(10));
+		log.debug("user click on add entry button for ward karyakarta");
 		ngDriver.withRootSelector("\"app-root\"").waitForAngularRequestsToFinish();
 		Thread.sleep(2000);
 
@@ -363,6 +340,7 @@ public class wardKaryakarta {
 
 	@And("^user clicks on enter more details$")
 	public void user_clicks_on_enter_more_details() throws InterruptedException {
+
 		wait = new WebDriverWait(driver, Duration.ofSeconds(110));
 		ngDriver = new NgWebDriver((JavascriptExecutor) driver);
 		js = (JavascriptExecutor) driver;
@@ -371,6 +349,51 @@ public class wardKaryakarta {
 		wait.until(ExpectedConditions.elementToBeClickable(extraDetailsEle));
 		js.executeScript("arguments[0].click();", extraDetailsEle);
 		Thread.sleep(1000);
+
+	}
+
+	@Then("^user input primary details in the data entry form$")
+	public void user_input_primary_details_in_the_data_entry_form(DataTable Karyakarta_primary_details)
+			throws InterruptedException {
+		ngDriver = new NgWebDriver((JavascriptExecutor) driver);
+		wait = new WebDriverWait(driver, Duration.ofSeconds(110));
+		Map<String, String> map = Karyakarta_primary_details.asMap(String.class, String.class);
+		name = map.get("Name");
+		fatherName = map.get("Father Name");
+		designation = map.get("Designation");
+		hasSmartPhone = map.get("Has Smartphone");
+		phoneNumber = map.get("Phone Number");
+		primaryMemberId = map.get("Primary Member ID");
+		age = map.get("Age");
+
+		// FormControlKaryakarta FormControlKaryakarta = new FormControlKaryakarta();
+		// Name
+		FormControlKaryakarta.enterKaryakartaName(name);
+
+		// Father and Husband Name
+		FormControlKaryakarta.enterKaryakartaRelationName(fatherName);
+
+		// Designation
+		FormControlKaryakarta.clickOnkaryakartaDesignation();
+
+		// Select Designation
+		FormControlKaryakarta.selectKaryakartaDesignation(designation);
+
+		// hasSmartPhone
+		FormControlKaryakarta.clickOnKaryakartaHasSmartPhone();
+
+		// select hasSmartPhone
+		FormControlKaryakarta.selectKaryakartaDesignation(hasSmartPhone);
+
+		// Primary Member
+		FormControlKaryakarta.enterKaryakartaPrimaryMemberId(primaryMemberId);
+		// Age
+		FormControlKaryakarta.enterKaryakartaAge(age);
+
+		// Validation for phone no.
+		apply_validation_in_phone_number();
+		// phone number
+		FormControlKaryakarta.enterKaryakartaPhoneNumber(phoneNumber);
 
 	}
 
@@ -436,17 +459,16 @@ public class wardKaryakarta {
 		// Select Designation
 		FormControlKaryakarta.selectKaryakartaDesignation(designation);
 
-		// Has SmartPhone
-		driver.findElement(By.xpath("//*[contains(text(),'Has Smartphone')]")).click();
-		WebElement HasSmartPhoneValueEle = driver
-				.findElement(By.xpath("//div//span[contains(text(),'" + hasSmartPhone + "')]"));
-		js.executeScript("arguments[0].click();", HasSmartPhoneValueEle);
+		// hasSmartPhone
+		FormControlKaryakarta.clickOnKaryakartaHasSmartPhone();
+
+		// select hasSmartPhone
+		FormControlKaryakarta.selectKaryakartaDesignation(hasSmartPhone);
+
 		// Primary Member
-		WebElement PrimaryMemberIdEle = driver.findElement(By.xpath("//input[@placeholder='Primary Member Id']"));
-		PrimaryMemberIdEle.sendKeys(primaryMemberId);
+		FormControlKaryakarta.enterKaryakartaPrimaryMemberId(primaryMemberId);
 		// Age
-		WebElement AgeEle = driver.findElement(By.xpath("//input[@placeholder='Age']"));
-		AgeEle.sendKeys(age);
+		FormControlKaryakarta.enterKaryakartaAge(age);
 		int ageInt = Integer.parseInt(age);
 		// Dob
 		String calculatedDOB = dob_calculation_based_on_age_input(ageInt);
@@ -480,11 +502,11 @@ public class wardKaryakarta {
 		// Blood Group
 		WebElement BloodGroupEle = driver.findElement(By.xpath("//input[@data-placeholder='Blood Group']"));
 		BloodGroupEle.sendKeys(bloodGroup);
-		// Phone Number
-		WebElement PhoneNumberEle = driver.findElement(By.xpath("//input[@placeholder='Phone Number']"));
+
 		// Validation for phone no.
 		apply_validation_in_phone_number();
-		PhoneNumberEle.sendKeys(phoneNumber);
+		// phone number
+		FormControlKaryakarta.enterKaryakartaPhoneNumber(phoneNumber);
 		// STD Code
 		WebElement stdCodeEle = driver.findElement(By.xpath("//input[@placeholder='STD Code']"));
 		stdCodeEle.sendKeys(stdCode);
@@ -540,7 +562,7 @@ public class wardKaryakarta {
 		fullAddressEle.sendKeys(fullAddress);
 
 		// Village
-		WebElement villageEle = driver.findElement(By.xpath("//input[@placeholder='Village']"));
+		WebElement villageEle = driver.findElement(By.xpath("//input[@placeholder='Village/Ward']"));
 		villageEle.sendKeys(village);
 
 		// Taluka/Tehsil
@@ -746,16 +768,10 @@ public class wardKaryakarta {
 	public void user_click_on_add_button() throws InterruptedException {
 
 		// click on Add button
-//		List<WebElement> dataEntryOverlay = driver.findElements(By.xpath("//div[@class='overlay ng-star-inserted']"));
 		WebElement addButtonEle = driver.findElement(By.xpath("//button//span[contains(text(),'Add')]"));
-//		while (dataEntryOverlay.size() > 0) {
-//			System.out.println("overlay for data entry");
-//			dataEntryOverlay = driver.findElements(By.xpath("//div[@class='overlay ng-star-inserted']"));
-//			Thread.sleep(1000);
-//		}
-//		System.out.println("--------overlay for data entry gone--------------");
-
+		js = (JavascriptExecutor) driver;
 		js.executeScript("arguments[0].click();", addButtonEle);
+		Thread.sleep(5000);
 
 	}
 
@@ -798,15 +814,51 @@ public class wardKaryakarta {
 		ngDriver.withRootSelector("\"app-root\"").waitForAngularRequestsToFinish();
 		Thread.sleep(5000);
 		get_Karyakarta_Data_To_Edit(phoneNumber);
-//		WebElement actionEle = driver.findElements(By.xpath("//mat-icon[contains(.,'more_vert')]")).get(0);
-//		js.executeScript("arguments[0].scrollIntoView(true);", actionEle);
-//		Thread.sleep(1000);
-//		// click on action from 1st row
-//		js.executeScript("arguments[0].click();", actionEle);
-//		Thread.sleep(1000);
-//		// click on Edit option
-//		WebElement editEle = driver.findElement(By.xpath("//span[contains(.,'Edit')]"));
-//		js.executeScript("arguments[0].click();", editEle);
+	}
+
+	@And("^user verify primary details in the data entry form$")
+	public void user_verify_primary_details_in_the_data_entry_form() throws InterruptedException {
+		js = (JavascriptExecutor) driver;
+		// Name
+		copiedEnteredName = driver.findElement(By.xpath("//input[@placeholder='Name']")).getAttribute("value");
+		Assert.assertEquals(copiedEnteredName.toUpperCase(), name.toUpperCase());
+
+		// Father's/Husband's Name
+		copiedEnteredFather_Husband_Name = driver.findElement(By.xpath("//input[contains(@placeholder, 'Father')]"))
+				.getAttribute("value");
+		Assert.assertEquals(fatherName.toUpperCase(), copiedEnteredFather_Husband_Name.toUpperCase());
+
+		// Designation
+		WebElement SelectDesignationEle = driver.findElement(By.xpath("//div[contains(text(),'Select Designation')]"));
+		copiedSelectedDesignation = driver.findElement(with(By.className("ng-value-label")).below(SelectDesignationEle))
+				.getText();
+		Assert.assertEquals(copiedSelectedDesignation, designation);
+
+		// Has SmartPhone
+		WebElement hasSmartPhoneEle = driver.findElement(By.xpath("//div[contains(text(),'Has Smartphone')]"));
+		copiedHasSmartPhone = driver.findElement(with(By.className("ng-value-label")).below(hasSmartPhoneEle))
+				.getText();
+		Assert.assertEquals(copiedHasSmartPhone, hasSmartPhone);
+
+		// Phone Number
+		copiedPhoneNo = driver.findElement(By.xpath("//input[@placeholder='Phone Number']")).getAttribute("value");
+		Assert.assertEquals(copiedPhoneNo, phoneNumber);
+
+		// Primary Member
+		copiedPrimaryMember = driver.findElement(By.xpath("//input[@placeholder='Primary Member Id']"))
+				.getAttribute("value");
+		Assert.assertEquals(copiedPrimaryMember, primaryMemberId);
+
+		// Age
+		copiedAge = driver.findElement(By.xpath("//input[@placeholder='Age']")).getAttribute("value");
+		Assert.assertEquals(copiedAge, age);
+
+		// click on cancel button
+		WebElement cancelButtonEle = driver.findElement(By.xpath("//span[contains(.,'Cancel')]"));
+		js.executeScript("arguments[0].click();", cancelButtonEle);
+
+		ngDriver.withRootSelector("\"app-root\"").waitForAngularRequestsToFinish();
+		Thread.sleep(2000);
 	}
 
 	@And("^user verify all the added data$")
@@ -908,7 +960,7 @@ public class wardKaryakarta {
 		Assert.assertEquals(copiedFullAddress, fullAddress);
 
 		// Village
-		copiedVillage = driver.findElement(By.xpath("//input[@placeholder='Village']")).getAttribute("value");
+		copiedVillage = driver.findElement(By.xpath("//input[@placeholder='Village/Ward']")).getAttribute("value");
 		Assert.assertEquals(copiedVillage, village);
 
 		// Taluka/Tehsil
@@ -1149,6 +1201,84 @@ public class wardKaryakarta {
 
 	}
 
+	@Then("^user edit primary details in the data entry form$")
+	public void user_edit_primary_details_in_the_data_entry_form(DataTable Karyakarta_Primary_Edit_Details)
+			throws InterruptedException {
+
+		ngDriver = new NgWebDriver((JavascriptExecutor) driver);
+		wait = new WebDriverWait(driver, Duration.ofSeconds(110));
+		Map<String, String> map = Karyakarta_Primary_Edit_Details.asMap(String.class, String.class);
+		updatedName = map.get("Name");
+		updatedFatherName = map.get("Father Name");
+		updatedDesignation = map.get("Designation");
+		updatedHasSmartPhone = map.get("Has Smartphone");
+		updatedPhoneNumber = map.get("Phone Number");
+		updatedPrimaryMemberId = map.get("Primary Member ID");
+		updatedAge = map.get("Age");
+
+		// Karyakarta_Edit_Details fill into the dynamic form
+		ngDriver.withRootSelector("\"app-root\"").waitForAngularRequestsToFinish();
+		Thread.sleep(2000);
+
+		WebElement actionEle = driver.findElements(By.xpath("//mat-icon[contains(.,'more_vert')]")).get(0);
+		WebElement actioneleAfterClickable = wait.until(ExpectedConditions.elementToBeClickable(actionEle));
+		js.executeScript("arguments[0].scrollIntoView(true);", actioneleAfterClickable);
+		Thread.sleep(1000);
+		// click on action from 1st row
+		js.executeScript("arguments[0].click();", actionEle);
+		Thread.sleep(1000);
+		// click on Edit option
+		driver.findElement(By.xpath("//span[contains(.,'Edit')]")).click();
+
+		Thread.sleep(1000);
+		// ------If you want to enter extra details please use this section.------
+		WebElement extraDetailsEle = driver.findElement(By.className("mat-expansion-panel-header-description"));
+		js.executeScript("arguments[0].scrollIntoView(true);", extraDetailsEle);
+		Thread.sleep(1000);
+		js.executeScript("arguments[0].click();", extraDetailsEle);
+
+		// Name
+		WebElement nameEle = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@placeholder='Name']")));
+		nameEle.sendKeys(Keys.CONTROL, "a", Keys.DELETE);
+
+		nameEle.sendKeys(updatedName);
+
+		// Father's/Husband's Name
+		WebElement fatherEle = driver.findElement(By.xpath("//input[contains(@placeholder, 'Father')]"));
+		fatherEle.sendKeys(Keys.CONTROL, "a", Keys.DELETE);
+		fatherEle.sendKeys(updatedFatherName);
+
+		// select Designation
+		driver.findElement(By.xpath("//div[contains(text(),'Select Designation')]")).click();
+		WebElement selectDesignationNameEle = driver.findElement(
+				By.xpath("//div[contains(@class,'ng-option')]//span[contains(text(),'" + updatedDesignation + "')]"));
+		js.executeScript("arguments[0].click();", selectDesignationNameEle);
+
+		// Has SmartPhone
+		driver.findElement(By.xpath("//*[contains(text(),'Has Smartphone')]")).click();
+		Thread.sleep(1000);
+		driver.findElement(
+				By.xpath("//div[contains(@class,'ng-option')]//span[contains(text(),'" + updatedHasSmartPhone + "')]"))
+				.click();
+
+		// Phone Number
+		WebElement PhoneNumberEle = driver.findElement(By.xpath("//input[@placeholder='Phone Number']"));
+		PhoneNumberEle.sendKeys(Keys.CONTROL, "a", Keys.DELETE);
+		PhoneNumberEle.sendKeys(updatedPhoneNumber);
+
+		// Primary Member
+		WebElement PrimaryMemberIdEle = driver.findElement(By.xpath("//input[@placeholder='Primary Member Id']"));
+		PrimaryMemberIdEle.sendKeys(Keys.CONTROL, "a", Keys.DELETE);
+		PrimaryMemberIdEle.sendKeys(updatedPrimaryMemberId);
+
+		// Age
+		WebElement AgeEle = driver.findElement(By.xpath("//input[@placeholder='Age']"));
+		AgeEle.sendKeys(Keys.CONTROL, "a", Keys.DELETE);
+		AgeEle.sendKeys(updatedAge);
+
+	}
+
 	@Then("^user edit all the added data with new data$")
 	public void user_edit_all_the_added_data_with_new_data(DataTable Karyakarta_Edit_Details)
 			throws InterruptedException {
@@ -1359,7 +1489,7 @@ public class wardKaryakarta {
 		fullAddressEle.sendKeys(updatedFullAddress);
 
 		// Village
-		WebElement villageEle = driver.findElement(By.xpath("//input[@placeholder='Village']"));
+		WebElement villageEle = driver.findElement(By.xpath("//input[@placeholder='Village/Ward']"));
 		villageEle.sendKeys(Keys.CONTROL, "a", Keys.DELETE);
 		villageEle.sendKeys(updatedVillage);
 
@@ -1676,7 +1806,7 @@ public class wardKaryakarta {
 		Assert.assertEquals(copiedFullAddress, updatedFullAddress);
 
 		// Village
-		copiedVillage = driver.findElement(By.xpath("//input[@placeholder='Village']")).getAttribute("value");
+		copiedVillage = driver.findElement(By.xpath("//input[@placeholder='Village/Ward']")).getAttribute("value");
 		Assert.assertEquals(copiedVillage, updatedVillage);
 
 		// Taluka/Tehsil
@@ -2012,7 +2142,7 @@ public class wardKaryakarta {
 						Assert.assertEquals(copiedFullAddress, updatedFullAddress);
 
 						// Village
-						copiedVillage = driver.findElement(By.xpath("//input[@placeholder='Village']"))
+						copiedVillage = driver.findElement(By.xpath("//input[@placeholder='Village/Ward']"))
 								.getAttribute("value");
 						Assert.assertEquals(copiedVillage, updatedVillage);
 
@@ -2552,7 +2682,7 @@ public class wardKaryakarta {
 		Assert.assertEquals(copiedFullAddress, updatedFullAddress);
 
 		// Village
-		copiedVillage = driver.findElement(By.xpath("//input[@placeholder='Village']")).getAttribute("value");
+		copiedVillage = driver.findElement(By.xpath("//input[@placeholder='Village/Ward']")).getAttribute("value");
 		Assert.assertEquals(copiedVillage, updatedVillage);
 
 		// Taluka/Tehsil

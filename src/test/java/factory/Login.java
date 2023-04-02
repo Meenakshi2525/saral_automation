@@ -32,7 +32,7 @@ public class Login extends Base {
 			throws InterruptedException, IOException {
 		driver = DriverFactory.getDriver();
 		//driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
-		System.out.println("User Logged in Successfully");
+		DriverFactory.getDriver().get("https://zila-staging.ccdms.in/");
 		ngDriver = new NgWebDriver((JavascriptExecutor) driver);
 		wait = new WebDriverWait(driver, Duration.ofSeconds(110));
 		js = (JavascriptExecutor) driver;

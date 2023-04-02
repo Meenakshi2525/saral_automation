@@ -6,7 +6,7 @@ Given user logged in into the saral application
 |Password|Sarada@123|
 |Otp|010203|
 @Add/Edit_Data
-Scenario: Testing pradesh add data and edit entry functionality
+Scenario: Testing pradesh add data and edit entry entire functionality
 Then user click on sangathan data management card on dashboard
 And user click on add entry button for pradesh
 And user select pradesh data filter
@@ -110,74 +110,47 @@ Then user edit all the added data with new data
 |Party Zila                     |Baanka                         |
 |Party Mandal                   |Barhat                         |
 |Blood Group                    |B+                             |
+And user click on update button
+ 
+@Test_with_few_data
+Scenario: testing pradesh add and edit data functionality with only primary fields
+Then user click on sangathan data management card on dashboard
+And user click on add entry button for pradesh
+And user select pradesh data filter
+|Input Fields           |Input Data       |
+|pradesh                |Bihar            |
+|Organisation Unit      |Core Sangathan   |
+|Organisation Sub Unit  |Office Bearer    | 
+And user click on search button and verify pradesh filter text
+Then user input primary details in the data entry form
+|Input Fields                   |Input Data                    |
+|Name                           |pradesh Automation            |
+|Father Name                    |testautomation                |
+|Designation                    |Secretary                     |
+|Phone Number                   |8111112234                    |
+|Has Smartphone                 |Yes                           |
+|Primary Member ID              |1234567876                    |
+|Age                            |45                            |
+And user click on add button
+And user click on edit button for recently added entry
+And user verify primary details in the data entry form
+When user enter data with duplicate phone which is already exist on given data level, unit, and subunit
+And user enter data with duplicate phone number which is already exist on different data level , unit and subunit
+|Duplicate Phone Number|8889035101|
+Then user edit primary details in the data entry form
+|Input Fields                   |Edit Input Data                |
+|Name                           |pradesh Automation Edit        |
+|Father Name                    |testautomationedit             |
+|Designation                    |Secretary                      |
+|Phone Number                   |8111112235                     |
+|Has Smartphone                 |No                             |
+|Primary Member ID              |1234567877                     |
+|Age                            |48                             |
 And user click on update button 
 
 
-#Scenario: Testing Qc flow in karyakarta data entry
-#Given user logged in into the saral application
-#|Email|state.adminup2@gmail.com|
-#|Password|Test@123|
-#|Otp|010203|
-#Then user click on sangathan data management card on dashboard
-#And user click on add entry button for ward karyakarta
-#And user select ward karyakarta data filter
-#|Input Fields           |Input Data       |
-#|state                  |Uttar Pradesh    |
-#|ULB Type               |Municipal Council|
-#|Administrative District|Agra             |
-#|Local Body             |Achhnera         |
-#|Ward                   |1 - Shivpuri     |
-#|Organisation Unit      |Core Sangathan   |
-#|Organisation Sub Unit  |Office Bearer    | 
-#And user scroll to view data table and search for data which need to edit and get all the data
-#|Input Fields                   |Edit Input Data                |
-#|Name                           |Ward Karyakarta Automation Edit|
-#|Father Name                    |testautomationedit             |
-#|Designation                    |UPDesig                        |
-#|Phone Number                   |8111112235                     |
-#|Has Smartphone                 |No                             |
-#|Primary Member ID              |1234567877                     |
-#|Age                            |48                             |
-#|Gender                         |Male                           |
-#|WhatsApp Number                |7687984586                     |
-#|STD Code                       |6756790                        |
-#|Landline Number                |7857787545769                  |
-#|Category                       |SC                             |
-#|Caste                          |Pasi                           |
-#|Email                          |wardkaryaedit@gamil.com        |
-#|Dob                            |02/Jan/1973                    |
-#|Full Address                   |Paschim Vihar New Delhi-110065 |
-#|Village                        |Demo Village edit              |
-#|Taluka                         |Demo Taluka edit               |
-#|District                       |Aligarh                        |
-#|Pin Code                       |110068                         |
-#|Education                      |Doctorate                      |
-#|Profession                     |Advocate                       |
-#|Bike                           |No                             |
-#|Car                            |No                             |
-#|Vidhan Sabha where he/she votes|Nakur                          |
-#|Booth where he/she votes       |1                              |
-#|Voter Id                       |63721638190                    |
-#|Aadhaar Number                 |732176387190                   |
-#|Panna Number                   |9                              |
-#|Ration Card Number             |6376876890                     |
-#|Facebook Profile               |abcedit@gmail.com              |
-#|Twitter Profile                |xyzedit@gmail.com              |
-#|Intagram Profile               |tyuiedit@gmail.com             |
-#|Linkedin Profile               |sdghjhjhedit@gmail.com         |
-#|Image                          |xyz                            |
-#|Salutation                     |Smt                            |
-#|Sub Caste                      |qwertedit123                   |
-#|Qualification                  |qwert123                       |
-#|Religion                       |Hinduism                       |
-#|Active Member Id               |647236816381790                |
-#|Party Zila                     |Agra Jila                      |
-#|Party Mandal                   |Akola                          |
-#|Blood Group                    |B+                             |
-#And user search for data which need to qc
-#And user qc all the data in qc pop up
-#And user click on qc done button and verify qc status
-#And user verify data in qc edit flow
+
+
 
 
 

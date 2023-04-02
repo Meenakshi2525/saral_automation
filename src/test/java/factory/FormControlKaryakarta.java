@@ -76,7 +76,8 @@ public class FormControlKaryakarta {
 		// has smart phone WebElement....
 		WebElement hasSmartPhone = driver.findElement(By.xpath("//*[contains(text(),'Has Smartphone')]"));
 		js = (JavascriptExecutor) driver;
-		js.executeScript("arguments[0].click();", hasSmartPhone);
+		hasSmartPhone.click();
+	
 	}
 
 	public static void selectKaryakartaHasSmartPhone(String hasSmartPhone) {
@@ -89,6 +90,12 @@ public class FormControlKaryakarta {
 
 	}
 
+	public static void enterKaryakartaPrimaryMemberId(String primaryMemberId) {
+		//primary member id webElement...
+		WebElement PrimaryMemberIdEle = driver.findElement(By.xpath("//input[@placeholder='Primary Member Id']"));
+		PrimaryMemberIdEle.sendKeys(primaryMemberId);
+		
+	}
 	public static void enterKaryakartaAge(String age) {
 
 		// age WebElement....

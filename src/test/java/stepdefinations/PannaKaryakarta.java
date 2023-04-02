@@ -38,7 +38,7 @@ public class PannaKaryakarta {
 		wait = new WebDriverWait(driver, Duration.ofSeconds(110));
 		ngDriver = new NgWebDriver((JavascriptExecutor) driver);
 		List<WebElement> addEntryElement = driver.findElements(By.xpath("//button/span[contains(text(),'Add Entry')]"));
-		wait.until(ExpectedConditions.visibilityOf(addEntryElement.get(10))).click();
+		wait.until(ExpectedConditions.visibilityOf(addEntryElement.get(11))).click();
 		ngDriver.withRootSelector("\"app-root\"").waitForAngularRequestsToFinish();
 		Thread.sleep(2000);
 

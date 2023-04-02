@@ -29,7 +29,7 @@ Then user input below details in data entry form with input fields validation
 |Landline Number                |7857787545767                 |
 |Category                       |OBC                           |
 |Caste                          |Das                           |
-|Email                          |wardkarya@gamil.com           |
+|Email                          |panna@gamil.com               |
 |Dob                            |02/Jan/1972                   |
 |Full Address                   |Paschim Vihar New Delhi-110063|
 |Village                        |Demo Village                  |
