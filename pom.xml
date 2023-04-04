@@ -161,6 +161,7 @@
 								<goal>verify</goal>
 							</goals>
 							<configuration>
+								<suiteXmlFiles>${xmlSuiteFileName}</suiteXmlFiles>
 								<includes>
 									<include>**/ParallelRun.java</include>
 								</includes>
